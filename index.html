@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body onload="fetchContacts()">
+
+        <div class="loader-wrapper">
+                    <div class="loader"></div>
+        </div>
+
+        <div id="table">Contacts loading...</div>
+        <button id="refresh" type="button">Refresh</button>
+        <button id="addContact" type="button">Add Contact</button>
+
+                <div id="myLink">
+            <p>© 2025, Phōtizō. All rights reserved.</p>
+        </div>
+
+                <script>
+                    window.addEventListener("load", function() {
+                        document.querySelector('.loader-wrapper').style.opacity = '0';
+                        setTimeout(function() {
+                             document.querySelector('.loader-wrapper').style.display = 'none';
+                        }, 500);
+                    });
+                </script>
+                
+        <script src="config.js"></script>
+        <script>
+
+            document.getElementById("addContact").addEventListener('click' , addContact);
+            document.getElementById("refresh").addEventListener('click', fetchContacts);
+
+            function fetchContacts(){
+                fetch(rootPath + "controller/get-contacts/")
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(data){
+                displayOutput(data);
+                //console.log(data);
+                })
+            }
+
+            function displayOutput(data){
+                output = "<table>";
+                
+                for( a in data){
+                output += `
+                    <tr onclick="editContact(${data[a].id})">
+                        <div id="block"> <td><img src="${rootPath}controller/uploads/${data[a].avatar}" width="70"/></td>
+                        <td><h5>${data[a].firstname}</h5></td>
+                        <td><h5>${data[a].lastname}</h5></td>
+                        </div>
+                    </tr>      
+                `
+                }
+            output += "</table>";
+            document.getElementById("table").innerHTML = output;
+            }
+
+            function addContact(){
+                window.open("add-contact.html" , "_self");
+            }
+
+            function editContact(id){
+                window.open("edit-contact.html?id=" + id, "_self")
+            }
+
+        </script>
+    </body>
+</html>
